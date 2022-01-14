@@ -3,11 +3,24 @@ package org.springframework.samples.petclinic.recoveryroom;
 import java.util.List;
 import java.util.Optional;
 
-public interface RecoveryRoomRepository {
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+
+public interface RecoveryRoomRepository extends CrudRepository<RecoveryRoom, Integer>{
     List<RecoveryRoom> findAll();
-    //List<RecoveryRoomType> findAllRecoveryRoomTypes();
+    
+    @Query("SELECT t FROM RecoveryRoomType t")
+    List<RecoveryRoomType> findAllRecoveryRoomTypes();
+    
+    
     Optional<RecoveryRoom> findById(int id);
     RecoveryRoom save(RecoveryRoom p);
-    //RecoveryRoomType getRecoveryRoomType(String name);
-    //List<RecoveryRoom> findBySizeMoreThan(double size);
+    
+    @Query("SELECT t FROM RecoveryRoomType t WHERE t.name =:name")
+    RecoveryRoomType getRecoveryRoomType(@Param("name") String name);
+    
+    
+    @Query("SELECT rooms FROM RecoveryRoom rooms WHERE rooms.size >:size")
+    List<RecoveryRoom> findBySizeMoreThan(@Param("size") Double size);
 }
